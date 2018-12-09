@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Kolesnikov V V</title>
+<link href="style/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var vm= new Vue({
+			el: '#site',
+			data: {
+				seen1:true,
+				seen2:false,
+				message: 'Записей нет',
+				kol:0,
+				ite:'',
+				items: [],
+				sel:[]
+			},
+			methods: {
+				viz: function () {
+					this.seen2=true
+					this.seen1=false
+				},
+				add: function (event) {
+					this.items.push({text:this.ite})
+					this.sel.push({zn:false})
+					this.ite=''
+					this.seen1=true
+					this.seen2=false
+				},
+				rem: function (key,event) {
+					this.items.splice(key, 1)
+					if(this.sel[key].zn) this.kol--
+					this.sel.splice(key, 1)
+				},
+				select: function (key,event) {
+					if(this.sel[key].zn){ this.sel[key].zn=false; this.kol--}else{ this.sel[key].zn=true; this.kol++}
+				}
+			}
+		})
+	})
+</script>
+</head><body>
+	<div id='site'>
+		<div id='bar'>Записей: <b id='num1'>{{items.length}}</b> Выполненых: <b id='num2'>{{kol}}</b> </div>
+		<div id='adding'><div id='desc' v-if="seen1" @click='viz'>Добавить элемент</div><div id='in' v-if="seen2"><textarea v-model='ite'  id='desc' cols='40' rows='3' @keyup.prevent.enter="add"></textarea></div></div>
+		<div class='txt' v-if='!items.length'>{{message}}</div>
+		<div id='content'><div v-for="(item, key) in items" class='el' v-bind:class='{ on: sel[key].zn }'><div @click='select(key)' v-bind:class='{ on: sel[key].zn }'></div><div>{{ item.text}}</div><div @click='rem(key)'>X</div></div></div>
+	</div>
+</body></html> 
